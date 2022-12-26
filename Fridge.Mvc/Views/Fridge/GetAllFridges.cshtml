@@ -1,0 +1,10 @@
+﻿@using FridgeWarehouse.Mvc.Models.ViewModels
+@model FridgeViewModel
+
+<b>
+    @Model.Name
+</b>
+
+<form asp-controller="Fridge" asp-action="GetAllFridges" method="get">
+    <button class="btn btn-primary" type ="submit">Submit</button>
+</Form>

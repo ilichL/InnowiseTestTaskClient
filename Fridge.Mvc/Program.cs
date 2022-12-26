@@ -1,4 +1,8 @@
-namespace Fridge.Mvc
+using FridgeWarehouse.Core.DTOs;
+using FridgeWarehouse.Core.Interfaces;
+using FridgeWarehouse.Domain.Interfaces;
+
+namespace FridgeWarehouse.Mvc
 {
     public class Program
     {
@@ -8,6 +12,15 @@ namespace Fridge.Mvc
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            /*
+            builder.Services.AddHttpClient<FixturesViewComponent>(options =>
+                 {
+                     options.BaseAddress = new Uri("http://80.350.485.118/api/v2");
+                 });
+            */
+            builder.Services.AddHttpClient();
+            builder.Services.AddScoped<IJsonSerializeService<BaseDTO>, JsonSerializeService<BaseDTO>>();
+            builder.Services.AddScoped<IJsonSerializeService<FridgeDTO>, JsonSerializeService<FridgeDTO>>();
 
             var app = builder.Build();
 
@@ -18,6 +31,7 @@ namespace Fridge.Mvc
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

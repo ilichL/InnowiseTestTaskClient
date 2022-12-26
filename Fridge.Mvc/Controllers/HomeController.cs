@@ -1,8 +1,8 @@
-﻿using Fridge.Mvc.Models;
+﻿using FridgeWarehouse.Mvc.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace Fridge.Mvc.Controllers
+namespace FridgeWarehouse.Mvc.Controllers
 {
     public class HomeController : Controller
     {

@@ -1,4 +1,4 @@
-namespace Fridge.Mvc.Models
+namespace FridgeWarehouse.Mvc.Models
 {
     public class ErrorViewModel
     {

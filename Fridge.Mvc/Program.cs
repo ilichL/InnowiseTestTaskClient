@@ -1,6 +1,9 @@
+using AutoMapper;
 using FridgeWarehouse.Core.DTOs;
 using FridgeWarehouse.Core.Interfaces;
+using FridgeWarehouse.Data.Entities;
 using FridgeWarehouse.Domain.Interfaces;
+using FridgeWarehouse.Mvc.Mapper;
 
 namespace FridgeWarehouse.Mvc
 {
@@ -18,9 +21,17 @@ namespace FridgeWarehouse.Mvc
                      options.BaseAddress = new Uri("http://80.350.485.118/api/v2");
                  });
             */
+
+            var configuration = new MapperConfiguration(ctf =>
+            {
+                ctf.CreateMap<Fridge, FridgeDTO>();
+                ctf.AddProfile<SourceProfile>();
+            });
+
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<IJsonSerializeService<BaseDTO>, JsonSerializeService<BaseDTO>>();
             builder.Services.AddScoped<IJsonSerializeService<FridgeDTO>, JsonSerializeService<FridgeDTO>>();
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             var app = builder.Build();
 
@@ -32,7 +43,7 @@ namespace FridgeWarehouse.Mvc
                 app.UseHsts();
             }
 
-
+            
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

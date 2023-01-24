@@ -21,16 +21,22 @@ namespace FridgeWarehouse.Mvc
                      options.BaseAddress = new Uri("http://80.350.485.118/api/v2");
                  });
             */
-
+            /*
             var configuration = new MapperConfiguration(ctf =>
             {
                 ctf.CreateMap<Fridge, FridgeDTO>();
                 ctf.AddProfile<SourceProfile>();
             });
+            */
+            var configurationBuilder = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .AddInMemoryCollection();
+
 
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<IJsonSerializeService<BaseDTO>, JsonSerializeService<BaseDTO>>();
             builder.Services.AddScoped<IJsonSerializeService<FridgeDTO>, JsonSerializeService<FridgeDTO>>();
+            //builder.Services.AddAutoMapper(typeof(Program).Assembly);
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             var app = builder.Build();

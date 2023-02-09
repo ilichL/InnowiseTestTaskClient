@@ -2,6 +2,7 @@
 {
     public class FridgeViewModel
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string LocationAddress { get; set; }
         public Guid FridgeModelId { get; set; }

@@ -36,6 +36,10 @@ namespace FridgeWarehouse.Mvc
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<IJsonSerializeService<BaseDTO>, JsonSerializeService<BaseDTO>>();
             builder.Services.AddScoped<IJsonSerializeService<FridgeDTO>, JsonSerializeService<FridgeDTO>>();
+            builder.Services.AddScoped<IJsonSerializeService<FridgeProductDTO>,
+                JsonSerializeService<FridgeProductDTO>>();
+            builder.Services.AddScoped<IJsonSerializeService<ProductDTO>,
+                JsonSerializeService<ProductDTO>>();
             //builder.Services.AddAutoMapper(typeof(Program).Assembly);
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

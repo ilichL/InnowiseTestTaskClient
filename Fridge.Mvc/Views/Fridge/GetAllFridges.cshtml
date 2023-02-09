@@ -1,15 +1,18 @@
 ﻿@using FridgeWarehouse.Mvc.Models.ViewModels
 @model List<FridgeViewModel>
 
-
 <div class="container">
     <div class="row">
+
+        @Html.ActionLink("Create", "")
         <table class="table col-12">
             <thead>
                 <tr>
-                    <th scope="col">Fridge Name</th>
-                    <th scope="col">Fridge LoccationAddress</th>
-                    <th scope="col"> </th>
+                    <th scope="col">Name</th>
+                    <th scope="col">LoccationAddress</th>
+                    <th scope="col">Products</th>
+                    <th scope="col"></th>
+
                 </tr>
             </thead>
 
@@ -19,19 +22,36 @@
                     <tr>
                     <th scope="row">@mod.Name</th>
                     <td>@mod.LocationAddress</td>
+
+                    <th scope="col">
+
+                        <details>
+                            <summary>Product list</summary>
+
+                            @if(!mod.FridgeProducts.Any())
+                            {
+                                <p>The are no any products in this fridge</p>
+                            }
+
+
                     @foreach(var product in mod.FridgeProducts)
                     {
-                        <td></td>
-                    }
-                    <td>
+                        <p>Product Name: @product.Product.Name</p>
+                        <p>Quantity: @product.Quantity</p>
 
-                        <button type="button" class="btn btn-outline-secondary" onclick="delete(@mod.Name)">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
-                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
-                            </svg>
-                            <span class="visually-hidden">Button</span>
-                        </button>
-                    </td>
+                    }
+                        </details>
+
+                    </th>
                 </tr>
+                <th>
+                    @if(Model.Any())
+                    {
+                        for(int i = 0; i < Model.Count/2; i++)
+                        {
+                            <a>@Html.ActionLink("Remove", "", mod.Id)</a>
+                            @Html.ActionLink("Edit", "");
+                        }
+                    }
+                </th>
 }

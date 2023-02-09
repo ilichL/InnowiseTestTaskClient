@@ -2,11 +2,11 @@
 
 namespace FridgeWarehouse.Mvc.Models.ViewModels
 {
-    public class FridgeModelViewModel
+    public class ProductViewModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public int year { get; set; }
-        public List<FridgeViewModel> Fridge { get; set; }
+        public int DefaultQuantity { get; set; }
+        public List<FridgeProductViewModel> FridgeProduct { get; set; }
     }
 }

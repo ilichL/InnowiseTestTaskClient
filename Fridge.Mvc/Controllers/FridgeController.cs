@@ -12,13 +12,14 @@ using AutoMapper;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.ComponentModel;
+using Microsoft.Extensions.Logging;
 
 namespace FridgeWarehouse.Mvc.Controllers
 {
     public class FridgeController : Controller
     {
         private readonly IConfiguration configuration;
-        private String Urle;
+        private readonly String fridgeUrle;
         private readonly IJsonSerializeService<FridgeDTO> jsonSerializeService;
         private readonly IHttpClientFactory clientFactory;
         private readonly IMapper mapper;
@@ -29,8 +30,7 @@ namespace FridgeWarehouse.Mvc.Controllers
             IMapper mapper)
         {
             this.configuration = configuration;
-            Urle = configuration["ConnectionUrl:FridgeUrl"];
-
+            fridgeUrle = configuration["ConnectionUrl:FridgeUrl"];
             this.jsonSerializeService = jsonSerializeService;
             this.clientFactory = clientFactory;
             this.logger = logger;
@@ -38,26 +38,50 @@ namespace FridgeWarehouse.Mvc.Controllers
         }
 
 
-
-
         [HttpGet]
-        public IActionResult RemoveFridge()//Guid id
+        public IActionResult RemoveFridge(Guid id)
         {
-            var model = new DeleteModel()/* { Id = id }*/;
+            var model = new DeleteModel() { Id = id };
             return View(model);
         }
 
         [HttpPost]
         public async Task<IActionResult> RemoveFridge(DeleteModel model)
-        {//https://localhost:7225;http://localhost:5225
-            using var httpClient = clientFactory.CreateClient("defaultFactory");
-            var response = await httpClient.GetAsync("https://localhost:7225/api/Fridge/GetFridgeCollection");
-            var responseStr = await response.Content.ReadAsStringAsync();
+        {
+            try
+            {
+                string _fridgeUrle = fridgeUrle + "/RemoveFridgeById";
+                await jsonSerializeService.ResponseWithIdASync(_fridgeUrle, model.Id);
+                return View();
+            }
+            catch(Exception ex)
+            {
+                logger.LogError(ex, ex.Message);
+                return BadRequest();
+            }
 
-            var deserialized = JsonConvert.DeserializeObject<Fridge>(responseStr);
-            //return Ok(deserialized);
-            return View(deserialized);
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> EditFridge(Guid id)
+        {
+            string _fridgeUrle = fridgeUrle + "/GetFridgeById";
+            var fridge = mapper.Map<FridgeViewModel>(
+                await jsonSerializeService.ResponseWithIdASync(_fridgeUrle, id));
+            return View(fridge);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> EditFridge(FridgeViewModel model)
+        {
+            string _fridgeUrl = fridgeUrle + "EditFridge";
+            await jsonSerializeService.PostResponseWithDTOAsync(_fridgeUrl,
+                mapper.Map<FridgeDTO>(model));
+            return View();
+        }
+
 
         public async Task<IActionResult> Tester()
         {
@@ -65,30 +89,19 @@ namespace FridgeWarehouse.Mvc.Controllers
             return Ok();
         }
 
+
         [HttpGet]
         public async Task<IActionResult> GetAllFridges()
         {
-            Urle += "/GetFridgeCollection";
+           string _fridgeUrle = fridgeUrle + "/GetFridgeCollection";
             var deserialized =
-                await jsonSerializeService.ResponseAsync(Urle);
+                await jsonSerializeService.ResponseAsync(_fridgeUrle);
+            var a = deserialized.First();
+            var mod = mapper.Map<FridgeViewModel>(a);
             var models = mapper.Map<List<FridgeViewModel>>((deserialized));
-
-            foreach (var deserialize in deserialized)
-            {
-                foreach (var model in models)
-                {
-                    model.FridgeProducts = mapper.Map<ICollection<FridgeProductViewModel>>(deserialize.FridgeProducts);
-                }
-
-            }
+            //6f9619ff-8b86-d011-b42d-00c05fc964fc
 
             return View(models);
-        }
-
-        [HttpPost]
-        public IActionResult GetFridge()
-        {
-            return Ok();   
         }
 
 
@@ -106,7 +119,6 @@ namespace FridgeWarehouse.Mvc.Controllers
             var deserialized = JsonConvert.DeserializeObject<FridgeDTO>(responsestring);
             return Ok(deserialized);
         }
-
 
 
         public IActionResult Index()
